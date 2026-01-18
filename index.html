@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Check-in / Check-out</title>
+  <style>
+    body { font-family: Arial; text-align: center; padding: 30px; }
+    input { font-size: 18px; padding: 10px; margin: 8px; width: 80%; }
+    button { font-size: 20px; padding: 15px; margin: 10px; width: 85%; cursor: pointer; }
+    #msg { margin-top: 20px; font-weight: bold; color: green; }
+  </style>
+</head>
+<body>
+
+<h2>Регистрация входа / выхода</h2>
+
+<input id="name" placeholder="Имя">
+<input id="surname" placeholder="Фамилия">
+
+<br>
+
+<button onclick="send('enter')">ВХОД</button>
+<button onclick="send('exit')">ВЫХОД</button>
+
+<p id="msg"></p>
+
+<script>
+const apiUrl = "https://script.google.com/macros/s/AKfycbzff3xGzSqLRQOT_kvR747KqjmBs-7uxJRi3PX89x8Yi7IEMZYFNon4IKVWaUWhV8bE/exec"; // <-- вставьте полный URL Web App
+
+function send(type) {
+  const name = document.getElementById("name").value.trim();
+  const surname = document.getElementById("surname").value.trim();
+
+  if (!name || !surname) {
+    alert("Введите имя и фамилию");
+    return;
+  }
+
+  fetch(apiUrl, {
+    method: "POST",
+    body: JSON.stringify({ type, name, surname }),
+    headers: { "Content-Type": "application/json" }
+  })
+  .then(r => r.text())
+  .then(res => {
+    document.getElementById("msg").innerText = "Данные успешно записаны!";
+    document.getElementById("name").value = "";
+    document.getElementById("surname").value = "";
+  })
+  .catch(err => {
+    document.getElementById("msg").innerText = "Ошибка: " + err;
+  });
+}
+</script>
+
+</body>
+</html>
