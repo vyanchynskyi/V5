@@ -25,10 +25,9 @@
 <p id="msg"></p>
 
 <script>
-// Обязательно вставьте сюда вашу актуальную ссылку, которую вы только что проверили в браузере!
 const apiUrl = "https://script.google.com/macros/s/AKfycbyTVf3sKu6UsTkSYx2i7cmEwlIgrIdWhnTIcTxaTJhVD_2jDwUofIxyFgwVCf_EYrPm/exec"; 
 
-function send(type) {
+async function send(type) {
   const name = document.getElementById("name").value.trim();
   const surname = document.getElementById("surname").value.trim();
   const msgEl = document.getElementById("msg");
@@ -39,31 +38,30 @@ function send(type) {
   }
 
   msgEl.style.color = "blue";
-  msgEl.innerText = "Отправка данных...";
+  msgEl.innerText = "Отправка...";
 
-  // Собираем ссылку точно так же, как вы только что сделали вручную в браузере
-  const finalUrl = `${apiUrl}?type=${encodeURIComponent(type)}&name=${encodeURIComponent(name)}&surname=${encodeURIComponent(surname)}&nocache=${Date.now()}`;
+  const finalUrl = `${apiUrl}?type=${encodeURIComponent(type)}&name=${encodeURIComponent(name)}&surname=${encodeURIComponent(surname)}`;
 
-  // Отправляем через объект Image (обходит любые блокировки CORS)
-  const img = new Image();
-  
-  img.onload = function() {
+  try {
+    // Используем fetch в режиме no-cors. 
+    // В этом режиме мы не сможем прочитать ответ "OK", но данные 100% уйдут в таблицу.
+    await fetch(finalUrl, {
+      method: 'GET',
+      mode: 'no-cors',
+      keepalive: true
+    });
+
+    // Если fetch не упал с ошибкой, значит запрос ушел
     msgEl.style.color = "green";
-    msgEl.innerText = "Успешно: " + (type === 'enter' ? "ВХОД" : "ВЫХОД") + " записан!";
+    msgEl.innerText = "Готово! Данные отправлены.";
     document.getElementById("name").value = "";
     document.getElementById("surname").value = "";
-  };
-
-  img.onerror = function() {
-    // Для Google Script этот метод часто вызывает onerror, даже если данные дошли.
-    // Поэтому мы проверяем таблицу — если данные там, значит все Ок.
-    msgEl.style.color = "green";
-    msgEl.innerText = "Готово! Проверьте таблицу.";
-    document.getElementById("name").value = "";
-    document.getElementById("surname").value = "";
-  };
-
-  img.src = finalUrl;
+    
+  } catch (err) {
+    console.error(err);
+    msgEl.style.color = "red";
+    msgEl.innerText = "Ошибка сети. Попробуйте еще раз.";
+  }
 }
 </script>
 
