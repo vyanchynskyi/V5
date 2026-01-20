@@ -3,92 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <title>Check-in / Check-out</title>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 30px;
-      background: #f4f4f4;
-    }
-
-    input {
-      font-size: 18px;
-      padding: 12px;
-      margin: 8px;
-      width: 90%;
-      max-width: 350px;
-    }
-
-    button {
-      font-size: 20px;
-      padding: 15px;
-      margin: 10px;
-      width: 95%;
-      max-width: 380px;
-      cursor: pointer;
-    }
-
-    #msg {
-      margin-top: 20px;
-      font-weight: bold;
-      color: green;
-    }
+    body { font-family: Arial; text-align: center; padding: 30px; }
+    input, button { font-size: 18px; padding: 12px; margin: 8px; width: 90%; }
+    button { font-size: 20px; }
   </style>
 </head>
 
 <body>
 
-  <h2>Регистрация входа / выхода</h2>
+<h2>Регистрация</h2>
 
-  <input id="name" placeholder="Имя" required>
-  <input id="surname" placeholder="Фамилия" required>
+<form
+  action="https://script.google.com/macros/s/AKfycbyPljjmk0ygatSIGwacK3_eSv_tv8KM7cPftQPI1ovfLvSSE-Rzkzv7_st3NMwEEZk/exec"
+  method="GET">
 
-  <br>
+  <input type="hidden" name="type" id="type">
+  <input name="name" placeholder="Имя" required>
+  <input name="surname" placeholder="Фамилия" required>
 
-  <button onclick="sendData('enter')">ВХОД</button>
-  <button onclick="sendData('exit')">ВЫХОД</button>
+  <button type="submit" onclick="document.getElementById('type').value='enter'">
+    ВХОД
+  </button>
 
-  <p id="msg"></p>
-
-<script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyTVf3sKu6UsTkSYx2i7cmEwlIgrIdWhnTIcTxaTJhVD_2jDwUofIxyFgwVCf_EYrPm/exec";
-
-  function sendData(type) {
-    const name = document.getElementById("name").value.trim();
-    const surname = document.getElementById("surname").value.trim();
-    const msg = document.getElementById("msg");
-
-    if (!name || !surname) {
-      alert("Введите имя и фамилию");
-      return;
-    }
-
-    msg.style.color = "black";
-    msg.innerText = "Отправка...";
-
-    const params = new URLSearchParams({
-      type: type,
-      name: name,
-      surname: surname
-    });
-
-    fetch(SCRIPT_URL + "?" + params.toString())
-      .then(() => {
-        msg.style.color = "green";
-        msg.innerText =
-          "Успешно: " + (type === "enter" ? "ВХОД" : "ВЫХОД") + " зафиксирован!";
-        document.getElementById("name").value = "";
-        document.getElementById("surname").value = "";
-      })
-      .catch(() => {
-        msg.style.color = "red";
-        msg.innerText = "Ошибка отправки";
-      });
-  }
-</script>
+  <button type="submit" onclick="document.getElementById('type').value='exit'">
+    ВЫХОД
+  </button>
+</form>
 
 </body>
 </html>
